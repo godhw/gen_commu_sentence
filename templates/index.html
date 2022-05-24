@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="styles.css" />
+
+    <title>generate community sentence</title>
+  </head>
+  <script>
+
+    function send() {
+      var url = "https://master-gpt2-everytime-fpem123.endpoint.ainize.ai/everytime/natural";
+      var text = document.getElementById("text").value;
+
+      if (text == '') {
+        document.getElementById('result').innerText = '단어를 넣어주세요';
+        return;
+      }
+
+      //https://developer.mozilla.org/ko/docs/Web/API/Fetch_API/Using_Fetch#fetch%EC%9D%98_%EC%84%B1%EA%B3%B5_%EC%97%AC%EB%B6%80_%ED%99%95%EC%9D%B8
+      const formData = new FormData();
+
+      formData.append('text', text);
+      formData.append('category', "대학생 잡담방");
+      formData.append('length', "200");
+
+      fetch(url, { method : 'POST', body: formData, })
+      .then(response => response.json())
+      .catch(err => {
+        document.getElementById('result').innerText = 'error';
+      })
+      .then(data => {
+        var result = document.getElementById('result');
+        result.innerHTML = '&nbsp;&nbsp;' + data[0].replace(/\n/gi, "<br>");
+      })
+      .catch(err => {
+        document.getElementById('result').innerText = 'error';
+      });
+      
+    }
+
+    function copyToClipboard() {
+      var copyText = document.getElementById('result').textContent;
+      var tempcopy = document.createElement("textarea");
+      document.body.appendChild(tempcopy);
+      tempcopy.textContent = copyText;
+      tempcopy.select();
+      document.execCommand("Copy");
+      document.body.removeChild(tempcopy);
+      alert('복사완료');
+    }
+  </script>
+  
+  <body>
+    <div class="header-wrapper">
+      <h1> generate community style sentence </h1>
+      
+    </div>
+    <ul class="listst">
+      <li>대학생 커뮤니티 스타일의 문장을 생성해 줍니다</li>
+      <li>시작할 말을 입력하고 생성 버튼을 눌러보세요</li>
+      <li>복사 버튼을 통해 생성된 문장을 복사해서 원하는 곳에 붙여넣으세요</li>
+      <li>다소 시간이 걸릴 수 있습니다</li>
+    </ul>
+    <div>
+      <h2 class="label-align"><label>시작할 말</label></h2>
+      <div class="input-container">
+        <input type="text" id="text" class="input-text"><br>
+      </div>
+      
+      <div class="wrap">
+        <a onclick="send();" class="button">생성</a>
+      </div>
+    </div>
+    <div>
+      <h2 class="label-align"><label>결과</label></h2>
+      <div class="input-container">
+      <p class="result-style" id="result">이 문장이 복사됩니다</p>
+      </div>
+      <div class="wrap">
+        <a onclick="copyToClipboard();" class= "button2">복사</a>
+      </div>
+    </div>
+  </body>
+</html>
